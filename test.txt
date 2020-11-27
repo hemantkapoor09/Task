@@ -1,0 +1,1 @@
+text is a text which can be tested by java program to test how many times your text has been occured.
