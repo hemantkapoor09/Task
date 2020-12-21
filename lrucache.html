@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Cache</title>
+	<script type="text/javascript">
+		class LRUCache {
+			constructor(max = 500) {
+				this.max = max;
+				this.cache = new Map();
+			}
+
+			get(key) {
+				let item = this.cache.get(key);
+				if (item) {
+					// refresh key
+					this.cache.delete(key);
+					this.cache.set(key, item);
+				}
+				return item;
+			}
+
+			set(key, val) {
+				// refresh key
+				if (this.cache.has(key)) this.cache.delete(key);
+				// deleting oldest
+				else if (this.cache.size == this.max) this.cache.delete(this.first());
+				this.cache.set(key, val);
+				// console.log('Size of Cache = ', this.cache.size);
+			}
+
+			reset() {
+				this.cache.clear();
+				console.log('Size of Cache = ', this.cache.size);
+			}
+
+			first() {
+				return this.cache.keys().next().value;
+			}
+		}
+
+		function mainFun(action) {
+			let cache;
+			if (!this.cache) {
+				const x = document.getElementById('sizeCache').value || 5;
+				this.cache = new LRUCache(x);
+			}
+
+			switch (action) {
+				case 'default5': {
+					console.log('Inputing Defaults');
+					['Key1', 'Key2', 'Key3', 'Key4', 'Key5'].forEach(key => {
+						this.cache.set(key, 'value' + key.charAt(key.length - 1));
+					});
+					break;
+				}
+				case 'reset': {
+					console.log('Reseting');
+					this.cache.reset();
+					break;
+				}
+				case 'set': {
+					console.log('Seting New: ');
+					this.cache.set(document.getElementById('key').value, document.getElementById('val').value);
+					document.getElementById('key').value = '';
+					document.getElementById('val').value = '';
+				}
+				case 'get': {
+					console.log('Fetching: ');
+					var k = document.getElementById('getKey').value;
+					var got = this.cache.get(k);
+					console.log(this.cache.get(k));
+					k = '';
+				}
+
+				case 'print': {
+					this.cache.cache.forEach((value, key) => {
+						console.log(`[${key}] = ${value}`);
+					})
+					if (this.cache.cache.size === 0) {
+						console.log('\n\          " Cache is empty \"')
+					}
+					break;
+				}
+				default:
+					break;
+			}
+		}
+
+		function init() {
+			var m = document.getElementById("mainSection");
+			m.style.display = "none";
+			var b = document.getElementById("beginSection");
+			b.style.display = "block";
+		}
+		function begin() {
+			alert('Recomended Action:\n\nOpen Console');
+
+			var m = document.getElementById("mainSection");
+			m.style.display = "block";
+			var b = document.getElementById("beginSection");
+			b.style.display = "none";
+		}
+	</script>
+	<style>
+		.entries {
+			width: fit-content;
+			background: #ddd;
+			padding: 2%;
+			border-radius: 7px;
+			font-size: large;
+			margin: 2%;
+		}
+
+		.entries input {
+			padding: 5px;
+			border-color: blue;
+		}
+
+		button {
+			background: chartreuse;
+			padding: 10px;
+			text-align: center;
+			font-size: large;
+			color: #222;
+			border-color: #fff;
+			margin: 2%;
+		}
+	</style>
+</head>
+
+<body style="background: #222;" onload="init()">
+	<h1 style="width: 100%;text-align: center;margin: 5% 0;color: #fff;border:solid #fff;">
+		Least resent used [LRU] Cache Assignment <br>
+		<i>By Hemant Kapoor</i>
+	</h1>
+	<div style="color: #fff;font-size: large;display: none;" id="beginSection">
+		Size of Cache [Integer]:
+		<input type="number" id="sizeCache">
+		<small style="margin: 10px;">Default Size to </small><span style="font-size: large;">5</span><br>
+		<button onclick=" begin()">
+			Begin
+		</button>
+	</div>
+	<div id="mainSection" style="display: none;">
+		<div>
+			<button onclick="mainFun('reset')">Reset Cache</button>
+			<button onclick="mainFun('default5')">Add Dummy 5 Values</button>
+			<button onclick="mainFun('print')">Print Console</button>
+		</div>
+		<div style="display: flex;">
+			<div class="entries">
+				<b><i>> Get Item</i></b>
+				<hr><br>
+				Key Name: &nbsp;<input type="text" id="getKey">
+				<br>
+				<small style="float: right;">example: Key1</small><br>
+				<button onclick="mainFun('get')">Get Item</button>
+			</div>
+
+			<div class="entries">
+				<b><i>> Input New Item</i></b>
+				<hr><br>
+				Key: &nbsp;&nbsp;<input type="text" id="key">
+				<br><br>
+				Value: <input type="text" id="val">
+				<br>
+				<button onclick="mainFun('set')">Add Item</button>
+			</div>
+		</div>
+	</div>
+</body>
+
+</html>
